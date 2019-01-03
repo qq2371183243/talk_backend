@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.daylight.talk.mapper.UserLoginMapper">
+    <resultMap id="BaseResultMap" type="me.daylight.talk.model.UserLogin">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="CHAR" property="phone"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, phone, password, state
+    </sql>
+    <delete id="deleteByPhone" parameterType="java.lang.String">
+        DELETE FROM login_check
+        WHERE phone = #{id,jdbcType=CHAR}
+    </delete>
+    <insert id="insert" parameterType="me.daylight.talk.model.UserLogin">
+        INSERT INTO login_check (id, phone, password,
+                                 state)
+        VALUES (#{id,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{password,jdbcType=VARCHAR},
+                #{state,jdbcType=INTEGER})
+    </insert>
+    <update id="changePassword" >
+        UPDATE login_check
+        SET password = #{password}
+        WHERE phone = #{phone}
+    </update>
+    <select id="checkPassword" resultType="java.lang.Boolean">
+        SELECT count(id)
+        FROM login_check
+        WHERE phone = #{phone} AND password = #{password}
+    </select>
+    <select id="isUserExist" resultType="java.lang.Boolean">
+        SELECT count(id)
+        FROM login_check
+        WHERE phone = #{phone}
+    </select>
+    <select id="getStateByPhone" resultType="java.lang.Integer">
+        SELECT state
+        FROM login_check
+        WHERE phone = #{phone}
+    </select>
+    <update id="updateStateByPhone">
+        UPDATE login_check
+        SET state = #{state}
+        WHERE phone=#{phone}
+    </update>
+</mapper>

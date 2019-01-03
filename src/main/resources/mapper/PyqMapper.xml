@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.daylight.talk.mapper.PyqMapper">
+    <resultMap id="BaseResultMap" type="me.daylight.talk.model.Pyq">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="CHAR" property="phone"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time" javaType="java.lang.Long"
+                typeHandler="me.daylight.talk.utils.DateLongTypeHandler"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="me.daylight.talk.model.Pyq">
+        <result column="context" jdbcType="LONGVARCHAR" property="context"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, phone, time
+    </sql>
+    <sql id="Blob_Column_List">
+        context
+    </sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from pyq
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM pyq
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="me.daylight.talk.model.Pyq">
+        INSERT INTO pyq (id, phone,time, context)
+        VALUES (#{id,jdbcType=INTEGER}, #{phone,jdbcType=CHAR},
+                #{time,javaType=java.lang.Long,jdbcType=TIMESTAMP,typeHandler=me.daylight.talk.utils.DateLongTypeHandler},
+                #{context,jdbcType=LONGVARCHAR})
+    </insert>
+    <select id="queryMyPyq" resultMap="ResultMapWithBLOBs">
+        SELECT *
+        FROM pyq
+        WHERE phone=#{phone} AND time>#{time}
+    </select>
+    <select id="queryFriendPyq" resultMap="ResultMapWithBLOBs">
+        SELECT pyq.*
+        FROM pyq
+        WHERE (pyq.phone IN
+              (SELECT friend_list.friend_phone
+              FROM friend_list
+              WHERE friend_list.phone=#{phone} and state=100))
+              or (pyq.phone IN
+                  (SELECT friend_list.phone
+                   FROM friend_list
+                   WHERE friend_list.friend_phone=#{phone} and state=100))
+              or pyq.phone=#{phone} AND time>#{time} ORDER BY time desc
+    </select>
+</mapper>

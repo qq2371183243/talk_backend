@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.daylight.talk.mapper.FriendMapper">
+    <resultMap id="BaseResultMap" type="me.daylight.talk.model.Friend">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="CHAR" property="phone"/>
+        <result column="friend_phone" jdbcType="CHAR" property="friendPhone"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time" javaType="java.lang.Long"
+                typeHandler="me.daylight.talk.utils.DateLongTypeHandler"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, phone, friend_phone, state, time
+    </sql>
+    <insert id="insert" parameterType="me.daylight.talk.model.Friend">
+        INSERT INTO friend_list (id, phone, friend_phone,
+                                 state, time)
+        VALUES (#{id,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{friendPhone,jdbcType=CHAR},
+                #{state,jdbcType=INTEGER}, #{time,javaType=java.lang.Long,jdbcType=TIMESTAMP,typeHandler=me.daylight.talk.utils.DateLongTypeHandler})
+    </insert>
+    <update id="changeState" parameterType="me.daylight.talk.model.Friend">
+        UPDATE friend_list
+        SET phone=#{phone,jdbcType=CHAR},
+            friend_phone=#{friendPhone,jdbcType=CHAR},
+            state = #{state,jdbcType=INTEGER},
+            time = #{time,javaType=java.lang.Long,jdbcType=TIMESTAMP,typeHandler=me.daylight.talk.utils.DateLongTypeHandler}
+        WHERE (phone=#{phone,jdbcType=CHAR} AND friend_phone=#{friendPhone,jdbcType=CHAR})
+        OR (friend_phone=#{phone,jdbcType=CHAR} AND phone=#{friendPhone,jdbcType=CHAR})
+    </update>
+    <update id="delete">
+        UPDATE friend_list
+        SET state=-200
+        WHERE (phone=#{phone} AND friend_phone=#{friendPhone})
+        OR (friend_phone=#{phone} AND phone=#{friendPhone})
+    </update>
+    <select id="isFriendExist" resultType="java.lang.Boolean">
+        SELECT count(id)
+        FROM friend_list
+        WHERE ((phone=#{phone} AND friend_phone=#{friendPhone})
+        OR (friend_phone=#{phone} AND phone=#{friendPhone})) AND (state=100 or state=-100)
+    </select>
+    <select id="isFriendDeleted" resultType="java.lang.Boolean">
+        SELECT count(id)
+        FROM friend_list
+        WHERE ((phone=#{phone} AND friend_phone=#{friendPhone})
+        OR (friend_phone=#{phone} AND phone=#{friendPhone})) AND state=-200
+    </select>
+    <select id="getFriendList" resultMap="BaseResultMap">
+        SELECT *
+        FROM friend_list
+        WHERE (friend_phone=#{phone} OR phone=#{phone}) AND time>#{time}
+    </select>
+    <select id="getFriend" resultMap="BaseResultMap">
+        SELECT *
+        FROM friend_list
+        WHERE (phone=#{phone} AND friend_phone=#{friendPhone})
+              OR (phone=#{friendPhone} AND friend_phone=#{phone})
+    </select>
+    <select id="hasNewFriend" resultType="java.lang.Boolean">
+        SELECT count(*)
+        FROM friend_list
+        WHERE friend_phone=#{phone} AND state=-100
+    </select>
+</mapper>

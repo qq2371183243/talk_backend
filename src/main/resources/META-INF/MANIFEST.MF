@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Class-Path: slf4j-api-1.7.25.jar jackson-module-parameter-names-2.9.5.
+ jar mybatis-spring-boot-starter-1.3.2.jar spring-websocket-5.0.5.RELE
+ ASE.jar spring-boot-starter-web-2.0.1.RELEASE.jar spring-boot-starter
+ -json-2.0.1.RELEASE.jar logback-classic-1.2.3.jar spring-web-5.0.5.RE
+ LEASE.jar tomcat-embed-el-8.5.29.jar spring-messaging-5.0.5.RELEASE.j
+ ar spring-jcl-5.0.5.RELEASE.jar spring-boot-autoconfigure-2.0.1.RELEA
+ SE.jar spring-aop-5.0.5.RELEASE.jar spring-context-5.0.5.RELEASE.jar 
+ mysql-connector-java-8.0.11.jar spring-boot-starter-2.0.1.RELEASE.jar
+  classmate-1.3.4.jar spring-boot-2.0.1.RELEASE.jar jul-to-slf4j-1.7.2
+ 5.jar spring-boot-starter-tomcat-2.0.1.RELEASE.jar logback-core-1.2.3
+ .jar spring-webmvc-5.0.5.RELEASE.jar jackson-datatype-jsr310-2.9.5.ja
+ r spring-boot-starter-jdbc-2.0.1.RELEASE.jar spring-boot-starter-webs
+ ocket-2.0.1.RELEASE.jar spring-beans-5.0.5.RELEASE.jar spring-express
+ ion-5.0.5.RELEASE.jar jackson-core-2.9.5.jar HikariCP-2.7.8.jar hiber
+ nate-validator-6.0.9.Final.jar mybatis-3.4.6.jar mybatis-spring-1.3.2
+ .jar gson-2.8.2.jar spring-tx-5.0.5.RELEASE.jar log4j-to-slf4j-2.10.0
+ .jar javax.annotation-api-1.3.2.jar tomcat-embed-core-8.5.29.jar vali
+ dation-api-2.0.1.Final.jar tomcat-embed-websocket-8.5.29.jar mybatis-
+ spring-boot-autoconfigure-1.3.2.jar spring-boot-starter-logging-2.0.1
+ .RELEASE.jar spring-jdbc-5.0.5.RELEASE.jar jackson-annotations-2.9.0.
+ jar jboss-logging-3.3.2.Final.jar spring-core-5.0.5.RELEASE.jar snake
+ yaml-1.19.jar log4j-api-2.10.0.jar druid-1.1.9.jar jackson-datatype-j
+ dk8-2.9.5.jar jackson-databind-2.9.5.jar
+Main-Class: me.daylight.talk.TalkApplication
+

@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+    datasource:
+        name: talk
+        url: jdbc:mysql://127.0.0.1:3306/talk?useSSL=false&allowMultiQueries=true&autoReconnect=true&allowPublicKeyRetrieval=true&serverTimezone=Hongkong
+        username: root
+        password: Super9689
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: me.daylight.talk.model

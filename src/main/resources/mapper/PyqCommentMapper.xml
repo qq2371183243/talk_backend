@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.daylight.talk.mapper.PyqCommentMapper">
+    <resultMap id="BaseResultMap" type="me.daylight.talk.model.PyqComment">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="pyq_id" jdbcType="INTEGER" property="pyqId"/>
+        <result column="send_phone" jdbcType="CHAR" property="sendPhone"/>
+        <result column="receive_phone" jdbcType="CHAR" property="receivePhone"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time" javaType="java.lang.Long"
+                typeHandler="me.daylight.talk.utils.DateLongTypeHandler"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="me.daylight.talk.model.PyqComment">
+        <result column="context" jdbcType="LONGVARCHAR" property="context"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, pyq_id, send_phone,receive_phone, time
+    </sql>
+    <sql id="Blob_Column_List">
+        context
+    </sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from pyq_comment
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM pyq_comment
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="me.daylight.talk.model.PyqComment">
+        INSERT INTO pyq_comment (id, pyq_id,send_phone,receive_phone,
+                                 time, context)
+        VALUES (#{id,jdbcType=INTEGER}, #{pyqId,jdbcType=INTEGER}, #{sendPhone,jdbcType=CHAR},
+                #{receivePhone,jdbcType=CHAR},#{time,jdbcType=TIMESTAMP}, #{context,jdbcType=LONGVARCHAR})
+    </insert>
+    <select id="queryCommentByPyqId" resultMap="ResultMapWithBLOBs">
+        SELECT *
+        FROM pyq_comment
+        WHERE pyq_id=#{pyqId}
+    </select>
+    <select id="queryReceivedComment" resultMap="ResultMapWithBLOBs">
+        SELECT *
+        FROM pyq_comment
+        WHERE receive_phone=#{phone}
+    </select>
+    <select id="querySendComment" resultMap="ResultMapWithBLOBs">
+        select *
+        from pyq_comment
+        WHERE send_phone=#{phone}
+    </select>
+</mapper>

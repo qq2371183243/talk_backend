@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div id="img-content">
+        <img src="/user/headImage/13250810969" id="img">
+    </div>
+    <script type="text/javascript">
+        (function() {
+            for (var i=0;i<3;i++){
+                var imgContent=document.getElementById("img-content");
+                imgContent.innerHTML+="<img src=\"/user/headImage/13250810969\">"
+            }
+            $("#img").attr("src","http://127.0.0.1:8080/user/headImage/13055643215")
+        }())
+    </script>
+</body>
+</html>

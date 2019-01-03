@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.daylight.talk.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="me.daylight.talk.model.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="CHAR" property="phone"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="nicname" jdbcType="VARCHAR" property="nicname"/>
+        <result column="gender" jdbcType="INTEGER" property="gender"/>
+        <result column="signature" jdbcType="VARCHAR" property="signature"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" javaType="java.lang.Long"
+                typeHandler="me.daylight.talk.utils.DateLongTypeHandler"/>
+    </resultMap>
+    <resultMap id="UserHeadImage" type="me.daylight.talk.model.UserWithAvater">
+        <result column="head_image" jdbcType="LONGVARBINARY" property="headImage"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, phone, name, nicname, gender, signature, address, updatetime
+    </sql>
+    <select id="findUserByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT *
+        FROM user
+        WHERE phone = #{phone,jdbcType=CHAR}
+    </select>
+    <select id="updateUserInfo" resultMap="BaseResultMap">
+        SELECT *
+        FROM user
+        WHERE user.updatetime > #{time}
+              AND ((user.phone IN
+                   (SELECT friend_list.phone
+                    FROM friend_list
+                    WHERE friend_list.friend_phone = #{phone}
+                          AND friend_list.state = 100))
+              OR (user.phone IN
+                  (SELECT friend_list.friend_phone
+                   FROM friend_list
+                   WHERE friend_list.phone = #{phone}
+                         AND friend_list.state = 100)))
+    </select>
+    <insert id="insert" parameterType="me.daylight.talk.model.UserWithAvater">
+        INSERT INTO user (id, phone, name,
+                          nicname, gender, signature,
+                          address, updatetime,head_image)
+        VALUES (#{id,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{name,jdbcType=VARCHAR},
+                #{nicname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{signature,jdbcType=VARCHAR},
+                #{address,jdbcType=VARCHAR}, #{updatetime,javaType=java.lang.Long,jdbcType=TIMESTAMP,typeHandler=me.daylight.talk.utils.DateLongTypeHandler},
+                #{headImage,jdbcType=LONGVARBINARY})
+    </insert>
+    <update id="update" parameterType="me.daylight.talk.model.User">
+        UPDATE user
+        SET name       = #{name,jdbcType=VARCHAR},
+            nicname    = #{nicname,jdbcType=VARCHAR},
+            gender     = #{gender,jdbcType=INTEGER},
+            signature  = #{signature,jdbcType=VARCHAR},
+            address    = #{address,jdbcType=VARCHAR},
+            updatetime = #{updatetime,javaType=java.lang.Long,jdbcType=TIMESTAMP,typeHandler=me.daylight.talk.utils.DateLongTypeHandler}
+        WHERE phone = #{phone,jdbcType=CHAR}
+    </update>
+    <select id="isUserExist" resultType="java.lang.Boolean">
+        SELECT count(id)
+        FROM user
+        WHERE phone = #{phone}
+    </select>
+    <select id="getFriendsInfo" resultMap="BaseResultMap">
+        SELECT user.*
+        FROM user
+        WHERE (user.phone IN
+               (SELECT friend_list.phone
+                FROM friend_list
+                WHERE friend_list.friend_phone = #{phone}
+                      AND friend_list.state = 100
+                      AND friend_list.time > #{time}))
+              OR (user.phone IN
+                  (SELECT friend_list.friend_phone
+                   FROM friend_list
+                   WHERE friend_list.phone = #{phone}
+                         AND friend_list.state = 100
+                         AND friend_list.time > #{time}))
+    </select>
+    <select id="getRequestList" resultMap="BaseResultMap">
+        SELECT user.*
+        FROM user
+        WHERE user.phone IN
+              (SELECT friend_list.phone
+               FROM friend_list
+               WHERE friend_list.friend_phone = #{phone}
+                     AND friend_list.state = -100)
+    </select>
+    <select id="getRequireList" resultMap="BaseResultMap">
+        SELECT user.*
+        FROM user
+        WHERE user.phone IN
+              (SELECT friend_list.phone
+               FROM friend_list
+               WHERE friend_list.phone = #{phone}
+                     AND friend_list.state = -100)
+    </select>
+    <select id="getAllUsers" resultMap="BaseResultMap">
+        SELECT *
+        FROM user
+    </select>
+    <select id="getUserHeadImage" resultMap="UserHeadImage">
+        SELECT head_image
+        FROM user
+        WHERE phone=#{phone}
+    </select>
+    <update id="updateUserHeadImage" parameterType="me.daylight.talk.model.UserWithAvater">
+        UPDATE user
+        SET head_image=#{headImage,jdbcType=LONGVARBINARY}
+        WHERE phone=#{phone}
+    </update>
+    <select id="hasUserHeadImage" resultType="java.lang.Boolean">
+        SELECT count(*)
+        FROM user
+        WHERE phone=#{phone} AND head_image IS NOT NULL
+    </select>
+    <select id="queryUsers" resultMap="BaseResultMap">
+        SELECT *
+        FROM user
+        WHERE phone=#{query} OR name=#{query} OR nicname=#{query}
+    </select>
+</mapper>
